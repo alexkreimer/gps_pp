@@ -20,14 +20,14 @@ plt.errorbar(data[:n,1], data[:n,2], xerr=data[:n,4], yerr=data[:n,5], fmt='--o'
 fig2, axes = plt.subplots(nrows=1, ncols=2)
 
 axes[0].grid(True)
-axes[0].set_xlabel('Y')
-axes[0].set_ylabel('Z')
+axes[0].set_xlabel('Y [m]')
+axes[0].set_ylabel('Z [m]')
 axes[0].set_title('Y,Z projection')
 axes[0].plot(data[:,1], data[:,2])
 
 axes[1].grid(True)
-axes[1].set_xlabel('X')
-axes[1].set_ylabel('Z')
+axes[1].set_xlabel('X [m]')
+axes[1].set_ylabel('Z [m]')
 axes[1].set_title('X,Z projection')
 axes[1].plot(data[:,0], data[:,2])
 
@@ -40,3 +40,26 @@ plt.plot(data[:,0], data[:,1], data[:,2])
 fig1.savefig('fig1.png', dpi=100)
 fig2.savefig('fig2.png', dpi=100)
 fig3.savefig('fig3.png', dpi=100)
+
+df_dt = df - df.shift()
+data_dt = df_dt.values[1:,0:3]
+norms = np.linalg.norm(data_dt, axis=1)
+
+fig3, axes = plt.subplots(nrows=2, ncols=1)
+
+axes[0].grid(True)
+axes[0].set_xlabel('Time [s]')
+axes[0].set_ylabel('Distance [m/s]')
+axes[0].set_title('Distance per step')
+axes[0].plot(range(len(norms)), norms)
+
+axes[1].grid(True)
+axes[1].set_xlabel('Time [s]')
+axes[1].set_ylabel('Distance [m]')
+axes[1].set_title('Cumulative distance')
+axes[1].plot(range(len(norms)), np.cumsum(norms))
+
+fig3.savefig('fig5.png', dpi=100)
+
+print('track length:', np.sum(norms))
+print('average speed:', np.sum(norms)/len(df))
